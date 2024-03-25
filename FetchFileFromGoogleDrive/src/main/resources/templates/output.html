@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/">
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+
+  <form th:action="@{/getFile}" method="post" enctype="multipart/form-data">
+        <label for="subject">Subject:</label><br>
+        <input type="text" id="subject" name="subject"><br><br>
+
+        <label for="to">To:</label><br>
+        <input type="email" id="to" name="to"><br><br>
+
+        <label for="uploadFile">Upload File:</label><br>
+        <input type="file" id="uploadFile" name="uploadFile"><br><br>
+
+      <!--   <label for="attachment">Attachment:</label><br>
+        <input type="file" id="attachment" name="attachment" multiple><br><br>
+ -->
+ <br><br>
+        <label for="body">Body:</label><br>
+        <textarea id="body" name="body" rows="4" cols="50"></textarea><br><br>
+
+        <input type="submit" value="Send">
+    </form>
+</body>
+</html>

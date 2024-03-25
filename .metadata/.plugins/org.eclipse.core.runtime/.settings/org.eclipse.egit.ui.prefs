@@ -1,0 +1,6 @@
+CloneWizard_ShowDetailedFailureDialog=false
+RepositorySearchDialogDeepSearch=false
+RepositorySearchDialogSearchPath=C\:\\Users\\Sreenivas Bandaru\\git
+commit_dialog_history_messages=<?xml version\="1.0" encoding\="UTF-8"?>\r\n<messages>\r\n<message>SpringSecurityJWT</message>\r\n<message>Mail form using thymeleaf</message>\r\n<message>image stored using thymeleaf</message>\r\n<message>Reading excel file and sending mails</message>\r\n<message>Image storage useing thymeleaf</message>\r\n<message>Employee and Shift table</message>\r\n<message>Retry &amp; circuit breaker</message>\r\n<message>Spring jdbc template</message>\r\n<message>Sp crud project</message>\r\n<message>Spring batch processing</message>\r\n</messages>
+eclipse.preferences.version=1
+repositories_view_filters=<?xml version\="1.0" encoding\="UTF-8"?>\r\n<FilterCache/>

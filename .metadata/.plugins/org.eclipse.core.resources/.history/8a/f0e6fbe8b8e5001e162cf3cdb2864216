@@ -1,0 +1,21 @@
+package com.java8Features.streams;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class MainClass {
+
+	public static void main(String[] args) {
+
+		List<Movie> list = new ArrayList<>();
+		list.add(new Movie("Athadu", 7.5, 2015));
+
+		list.add(new Movie("Arjun", 6.5, 2017));
+		list.add(new Movie("Srimanthudu", 8.5, 2019));
+		
+		
+		System.out.println(list);
+
+	}
+
+}

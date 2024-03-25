@@ -1,0 +1,25 @@
+package com.java8Features.lambdaEx;
+
+
+
+interface EX{
+	
+	int test(int a,int b);
+}
+public class MethodRef {
+	
+	   static int result(int i,int b)
+	   {
+             return i+b;		   
+	   }
+	
+	public static void main(String[] args) {
+		
+		
+		
+		EX e=MethodRef::result;
+		System.out.println("Addition of two is :"+e.test(26, 07));
+		
+	}
+
+}

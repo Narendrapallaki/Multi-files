@@ -1,0 +1,28 @@
+package com.java8Features.lambdaEx;
+
+public class Te {
+	
+	
+	public static void main(String[] args) {
+		
+		
+		
+		try {
+			System.out.println("a");
+			
+			int a=5/0;
+			System.out.println(a);
+			
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			
+			e.printStackTrace();
+			System.out.println("b");
+		}
+		finally {
+			System.out.println("c");
+		}
+	}
+
+}

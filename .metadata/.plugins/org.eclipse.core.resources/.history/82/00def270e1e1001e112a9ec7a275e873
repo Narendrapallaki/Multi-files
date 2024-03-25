@@ -1,0 +1,6 @@
+package com.springsecurity.SecurityConfig;
+
+
+public class JwtAuthenticationFilter  {
+
+}

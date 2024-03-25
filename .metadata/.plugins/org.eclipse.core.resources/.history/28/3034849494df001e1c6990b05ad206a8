@@ -1,0 +1,43 @@
+package com.fileReader.fileReadControllor;
+
+import java.io.IOException;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.fileReader.fileReadService.FileReadService;
+@RestController
+public class FileReadControllor {
+
+	@Autowired
+	 private FileReadService fileReadService;
+	
+	@GetMapping("/fileReader")
+	public ResponseEntity<List<String>>readFile(@RequestParam("file") MultipartFile file)
+	{
+		
+		List<String> fileRead = null;
+		try {
+			fileRead = fileReadService.readExcelData(file);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return ResponseEntity.ok(fileRead);
+	}
+	
+	@GetMapping("/pdfReader")
+	public ResponseEntity<String>readPdf(@RequestParam("pdf") MultipartFile pdf)
+	{
+		
+		fileReadService.pdfReader(pdf);
+	
+		return ResponseEntity.ok(pdfReader);
+	}
+}

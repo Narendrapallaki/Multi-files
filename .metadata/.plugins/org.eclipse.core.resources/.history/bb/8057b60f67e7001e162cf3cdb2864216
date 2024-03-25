@@ -1,0 +1,30 @@
+package com.java8Features.streams;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class UserSortByAge {
+	
+	
+	public static void main(String[] args) {
+		
+		
+		
+		List<User>users=new ArrayList<>();
+		users.add(new User("Alice", 25, "abc"));
+        users.add(new User( "Bob", 30, "def"));
+        users.add(new User( "Charlie", 22, "ghi"));
+        users.add(new User("David", 28, "jkl"));
+        
+        Collections.sort(users);
+        
+        for (User user : users) {
+			
+        	System.out.println(user);
+		}
+        
+        users.stream().sorted().forEach(System.out::println);
+	}
+
+}

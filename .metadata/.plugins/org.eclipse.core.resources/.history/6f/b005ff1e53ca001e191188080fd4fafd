@@ -1,0 +1,29 @@
+package com.java8Features.lambdaEx;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class DataGet {
+	
+	
+	
+	
+	
+	public static List<Book> list()
+	{
+		
+		List<Book>book=new  ArrayList<>();
+		Book b1=new Book("raghu","dfjh","fdj",3);
+		
+		Book b2=new Book();
+		b2.setAuthor("raj");
+		b2.setBookName("lakshman");
+		b2.setCost("pounds");
+		b2.setId(4);
+		
+		book.add(b2);
+		book.add(b1);
+		return book;
+	}
+
+}

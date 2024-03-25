@@ -1,0 +1,5 @@
+package com.java8Features.streams;
+
+public class UserComparator {
+
+}

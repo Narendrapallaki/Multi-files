@@ -1,0 +1,16 @@
+package com.java8Features.lambdaEx;
+
+import java.util.Arrays;
+
+public class StreamMethodEx {
+
+	public static void main(String[] args) {
+
+		
+		      Arrays.asList(1,2,5,8,9,10);
+		      
+		
+		 
+	}
+
+}

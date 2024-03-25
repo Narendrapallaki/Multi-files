@@ -1,0 +1,5 @@
+package com.springBatch.Config;
+
+public class SpringBatchConfig {
+
+}

@@ -1,0 +1,20 @@
+package com.java8Features.lambdaEx;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class LambdaExpresion {
+
+	public static void main(String[] args) {
+		
+		
+		
+		List<String>list=new ArrayList<>();
+		list.add("shalini panday");
+		list.add("from");
+		list.add("siripuram");
+		
+		list.forEach(System.out::println);
+
+	}
+}

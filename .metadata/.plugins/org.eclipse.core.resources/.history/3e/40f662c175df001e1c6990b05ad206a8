@@ -1,0 +1,60 @@
+package com.fileReader.fileReadService;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+@Service
+public class FileReadService {
+	
+	
+	/* public List<String> readExcelData(MultipartFile eFile) throws IOException {
+    List<String> emailDataList = new ArrayList<>();
+
+    try (Workbook workbook = WorkbookFactory.create(eFile.getInputStream())) {
+        Sheet sheet = workbook.getSheetAt(0); // Assuming data is in the first sheet
+
+        // Iterate over each row
+        for (int i = 0; i <= sheet.getLastRowNum(); i++) {
+            Row row = sheet.getRow(i);
+            if (row != null) {
+                StringBuilder rowData = new StringBuilder();
+                
+                // Iterate over each cell in the row
+                for (int j = 0; j < row.getLastCellNum(); j++) {
+                    Cell cell = row.getCell(j);
+                    if (cell != null) {
+                        // Append cell value to rowData
+                        rowData.append(cell.toString()).append("  ");
+                    }
+                }
+                // Add rowData to emailDataList
+                emailDataList.add(rowData.toString());
+            }
+        }
+    }
+    return emailDataList;
+}
+*/
+  
+	// this method will only work for csv file and text file only not for excel files 
+	public List<String> readExcelData(MultipartFile csvFile) throws IOException {
+		List<String> csvDataList = new ArrayList<>();
+
+		try (BufferedReader br = new BufferedReader(new InputStreamReader(csvFile.getInputStream()))) {
+			String line;
+			while ((line = br.readLine()) != null) {
+
+
+
+				csvDataList.add(line);
+			}
+		}
+		return csvDataList;
+	}
+
+}

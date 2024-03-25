@@ -1,0 +1,31 @@
+package com.java8Features.lambdaEx;
+
+
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+
+public class StreamMethodEx {
+
+	public static void main(String[] args) {
+
+		
+		
+		      //Filter 
+		      List<Integer> asList = Arrays.asList(1,2,5,8,9,10);
+		      List<Integer> collect = asList.stream().filter(n -> n%2==0).collect(Collectors.toList());
+		      System.out.println("Even numbers list :"+collect);
+		      
+		       asList.stream().filter(n-> n%2==0 ).forEach(System.out::println);
+		       
+		       //Map
+		       
+		       List<String> list = Arrays.asList("nari","ram","hemanth","veera","ashok");
+		       
+		        list.stream().map(name -> name.startsWith("n")).forEach(System.out::println);
+		        
+		 
+	}
+
+}

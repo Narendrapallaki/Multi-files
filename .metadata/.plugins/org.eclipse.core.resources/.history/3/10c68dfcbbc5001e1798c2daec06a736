@@ -1,0 +1,117 @@
+package com.springBatch.config;
+
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.Step;
+import org.springframework.batch.core.job.builder.JobBuilder;
+import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.item.data.RepositoryItemWriter;
+import org.springframework.batch.item.file.FlatFileItemReader;
+import org.springframework.batch.item.file.LineMapper;
+import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
+import org.springframework.batch.item.file.mapping.DefaultLineMapper;
+import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
+import org.springframework.core.task.TaskExecutor;
+import org.springframework.transaction.PlatformTransactionManager;
+
+import com.springBatch.entity.Users;
+import com.springBatch.springBatchRepo.SpringBatchRepo;
+
+import lombok.AllArgsConstructor;
+
+@Configuration
+@AllArgsConstructor
+public class SpringBatchConfig {
+
+	
+	private SpringBatchRepo batchRepo;
+
+	// item reader
+	@Bean
+	public FlatFileItemReader<Users> itemReader() {
+		FlatFileItemReader<Users> itemReader = new FlatFileItemReader<>();
+
+		itemReader.setResource(new FileSystemResource("src/main/resources/users.csv"));
+		itemReader.setName("csvUsers");
+
+		itemReader.setLinesToSkip(1);
+		itemReader.setLineMapper(lineMapper());
+		return itemReader;
+	}
+
+	private LineMapper<Users> lineMapper() {
+
+		DefaultLineMapper<Users> lineMapper = new DefaultLineMapper<>();
+
+		DelimitedLineTokenizer lineTokenizer = new DelimitedLineTokenizer();
+
+		lineTokenizer.setDelimiter(",");
+		lineTokenizer.setStrict(false);
+		lineTokenizer.setNames("id", "name", "dept", "salary");
+
+		BeanWrapperFieldSetMapper<Users> fieldSetMapper = new BeanWrapperFieldSetMapper<>();
+
+		fieldSetMapper.setTargetType(Users.class);
+
+		lineMapper.setFieldSetMapper(fieldSetMapper);
+		lineMapper.setLineTokenizer(lineTokenizer);
+
+		return lineMapper;
+	}
+
+	// item processor
+	@Bean
+	public UserProcessor itemProcessor() {
+		return new UserProcessor();
+	}
+	// item writer
+
+	@Bean
+	public RepositoryItemWriter<Users> itemWriter() {
+
+		RepositoryItemWriter<Users> itemWriter = new RepositoryItemWriter<>();
+
+		itemWriter.setRepository(batchRepo);
+		itemWriter.setMethodName("save");
+		return itemWriter;
+	}
+
+	// steps
+	@Bean
+	public Step jobStep(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
+		return new StepBuilder("step-builder", jobRepository).<Users, Users>chunk(5, transactionManager)
+				.reader(itemReader())
+				.processor(itemProcessor())
+				.writer(itemWriter())
+				.taskExecutor(taskExecutor())
+						
+
+				.build();
+
+	}
+
+	
+	// job
+		@Bean
+		public Job jobRun(JobRepository jobRepository, PlatformTransactionManager transactionManager,JobComplitionNotificationImpl complitionNotificationImpl)
+		{
+			return new JobBuilder("import-data", jobRepository)
+					.listener(complitionNotificationImpl)
+					.start(jobStep(jobRepository,transactionManager)).build();
+					
+					//.flow(jobStep(jobRepository,transactionManager)).end().build();
+		}
+
+		@Bean
+		public TaskExecutor taskExecutor() {
+			SimpleAsyncTaskExecutor asyncTaskExecutor = new SimpleAsyncTaskExecutor();
+			asyncTaskExecutor.setConcurrencyLimit(10);
+			return asyncTaskExecutor;
+		}
+	
+	
+}

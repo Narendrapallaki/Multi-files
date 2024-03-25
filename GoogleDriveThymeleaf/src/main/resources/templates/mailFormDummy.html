@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Registration Page</title>
+    <style>
+       .error-message {
+            color: red;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Page content -->
+    <div class="content">
+        <form th:action="@{/formPost}" method="post" enctype="multipart/form-data">
+            <h3>Registration Page</h3>
+            <label for="from">From:</label>
+            <input type="text" id="from" name="from" >
+           
+              <span th:text="${errorMessage}" class="error-message"></span>
+               
+           
+          <br>
+            <label for="to">To:</label>
+            <input type="file" id="to" name="to"><br>
+            <label for="zip">Zip:</label>
+            <input type="file" id="zip" name="zip"><br>
+            <label for="subject">Subject:</label>
+            <input type="text" id="subject" name="subject">
+            <label for="body">Body:</label>
+            <textarea id="body" name="body"></textarea>
+            <input type="submit" value="Send">
+        </form>
+      
+    </div>
+</body>
+</html>

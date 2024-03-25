@@ -1,0 +1,25 @@
+package com.java8Features.lambdaEx;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class LambdaExpresion {
+
+	public static void main(String[] args) {
+
+		List<Integer> list = new ArrayList<>();
+		list.add(2);
+		list.add(3);
+		list.add(5);
+		list.add(8);
+		list.forEach(n -> System.out.println(n));
+
+		list.forEach(even -> {
+
+			if (even % 2 == 0) {
+				System.out.println("Even number's :" + even);
+			}
+		}
+		);
+	}
+}

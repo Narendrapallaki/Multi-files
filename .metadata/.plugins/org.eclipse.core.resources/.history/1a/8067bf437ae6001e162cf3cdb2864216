@@ -1,0 +1,10 @@
+package com.java8Features.lambdaEx;
+
+public class Car {
+
+	
+	 public String company;
+	 public String model;
+	 public double price;
+	 
+}

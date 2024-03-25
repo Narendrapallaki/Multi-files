@@ -1,0 +1,232 @@
+package com.gcc.service;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.security.GeneralSecurityException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Random;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
+
+import com.gcc.config.GoogleDriveConfig;
+import com.gcc.entity.EmailRequest;
+
+import jakarta.mail.internet.MimeMessage;
+import lombok.extern.slf4j.Slf4j;
+
+// ...
+
+@Service
+@Slf4j
+public class EmailServiceImp implements EmailService {
+
+	@Autowired
+	private JavaMailSender javaMailSender;
+	@Autowired
+	private TemplateEngine templateEngine;
+	@Autowired
+	private GoogleDriveConfig googleDriveConfig;
+
+	@Override
+	public void sendEmailWithAttachment(EmailRequest emailRequest) {
+		log.info("mail sender Application serviceImpl class method-sendEmailWithAttachment  : {}", emailRequest);
+
+		try {
+			MimeMessage message = javaMailSender.createMimeMessage();
+			MimeMessageHelper helper = new MimeMessageHelper(message, true);
+			helper.setTo(emailRequest.getTo());
+			helper.setSubject(emailRequest.getSubject());
+
+			// Create a Thymeleaf context and add variables
+			Context thymeleafContext = new Context();
+			thymeleafContext.setVariable("subject", emailRequest.getSubject());
+			thymeleafContext.setVariable("name", emailRequest.getName()); // Example name
+			thymeleafContext.setVariable("text", emailRequest.getText());
+
+			// Process the HTML template with Thymeleaf
+			String htmlContent = templateEngine.process("template", thymeleafContext);
+
+			if (htmlContent != null) {
+				helper.setText(htmlContent, true);
+			} else {
+				System.err.println("Email template file not found or couldn't be read!");
+				return;
+			}
+
+			if (emailRequest.getAttachments() != null) {
+				for (MultipartFile file : emailRequest.getAttachments()) {
+					helper.addAttachment(Objects.requireNonNull(file.getOriginalFilename()),
+							new ByteArrayResource(file.getBytes()));
+				}
+			}
+
+			javaMailSender.send(message);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public String otpMailSender(String email, String name) {
+
+		final String OTP = this.generateOTP();
+		final String textMessage = "your Gcc varification code is " + OTP + " valid for 10 min. Don't share anyone";
+		try {
+			MimeMessage message = javaMailSender.createMimeMessage();
+			MimeMessageHelper helper = new MimeMessageHelper(message, true);
+			helper.setTo(email);
+			helper.setSubject("Email Varification OTP");
+			log.info("mail sender Application serviceImpl class method-mailsender : {}", helper);
+
+			// thymeleaf
+			Context context = new Context();
+			context.setVariable("subject", "Email Varification OTP");
+			context.setVariable("name", name);
+			context.setVariable("text", textMessage);
+			String htmlContent = templateEngine.process("template", context);
+
+			helper.setText(htmlContent, true);
+			log.info("mail sender Application serviceImpl class method-mailsender with text : {}", helper);
+
+			javaMailSender.send(message);
+
+		} catch (Exception e) {
+			throw new RuntimeException("Mail Not sent !!");
+		}
+		return OTP;
+	}
+
+	public String generateOTP() {
+
+		Random random = new Random();
+		int otpValue = 100000 + random.nextInt(900000);
+		String otp = String.valueOf(otpValue);
+		return otp;
+	}
+
+	@Override
+	public void sendEmailSingleOrBulkEmail(EmailRequest emailRequest) {
+		if (emailRequest.getFiles() != null) {
+			log.info("mail sender Application serviceImpl class method-sendEmailSingleOrBulkEmail if block : {}",
+					emailRequest);
+
+			for (MultipartFile file : emailRequest.getFiles()) {
+				try {
+					// Create a BufferedReader to read the file content
+					BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()));
+					boolean isFirstLine = true;
+					String line;
+					while ((line = reader.readLine()) != null) {
+						if (isFirstLine) {
+							isFirstLine = false;
+							continue;
+						}
+						// Split the line by space and process each token
+						String[] tokens = line.split(",");
+						for (int i = 0; i < tokens.length; i++) {
+							if (i == 0) {
+								emailRequest.setName(tokens[i]);
+							} else if (i == 1) {
+								emailRequest.setTo(tokens[i]);
+							}
+						}
+						this.sendEmailWithAttachment(emailRequest);
+					}
+					// Close the BufferedReader
+					reader.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		} else {
+			log.info("mail sender Application serviceImpl class method-sendEmailSingleOrBulkEmail if block : {}",
+					emailRequest);
+			this.sendEmailWithAttachment(emailRequest);
+		}
+	}
+
+	Map<String, Object> appraisalObject = new HashMap<>();
+	@Override
+	public void sendEmailSingleOrBulkAppraisalEmail(EmailRequest emailRequest) {
+	    if (emailRequest.getFiles() != null) {
+	        for (MultipartFile file : emailRequest.getFiles()) {
+	            try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+	                String line;
+	                boolean isFirstLine = true;
+	                List<String> headers = new ArrayList<>();
+	                List<List<String>> values = new ArrayList<>();
+
+	                while ((line = reader.readLine()) != null) {
+	                    String[] tokens = line.split(",");
+	                    
+	                    if (isFirstLine) {
+	                        headers.addAll(Arrays.asList(tokens));
+	                        isFirstLine = false;
+	                    } else {
+	                        values.add(Arrays.asList(tokens));
+	                    }
+	                }
+	                // Transpose the values matrix
+	                List<Map<String, String>> data = transposeData(headers, values);
+	                for (Map<String, String> entry : data) {
+	                    for (Map.Entry<String, String> keyValue : entry.entrySet()) {
+	                    	 if (keyValue.getKey().equals("email")) {
+	                    		 emailRequest.setTo( keyValue.getValue());
+	                    	 }
+	                    	if (keyValue.getKey().equals("file name")) {
+	                             System.out.println("File Name: " + keyValue.getValue());
+	                             try {
+	                            	 MultipartFile googleDriveFile= googleDriveConfig.getFileByName(keyValue.getValue());
+									System.out.println("googleDrive files : "+googleDriveFile);
+									 if (googleDriveFile != null) {
+	                                        
+	                                        emailRequest.setAttachments(new MultipartFile[] { googleDriveFile });
+	                                        this.sendEmailWithAttachment(emailRequest);
+	                                    }
+								} catch (GeneralSecurityException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								} catch (Exception e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+	                         } 
+	                    }
+	                } 
+	                
+	            } catch (IOException e) {
+	                e.printStackTrace();
+	            }
+	        }
+	    } else {
+	        this.sendEmailWithAttachment(emailRequest);
+	    }
+	}
+
+	private List<Map<String, String>> transposeData(List<String> headers, List<List<String>> values) {
+	    List<Map<String, String>> transposedData = new ArrayList<>();
+
+	    for (List<String> row : values) {
+	        Map<String, String> rowData = new LinkedHashMap<>();
+	        for (int i = 0; i < headers.size(); i++) {
+	            rowData.put(headers.get(i), row.get(i));
+	        }
+	        transposedData.add(rowData);
+	    }
+	    return transposedData;
+	}
+
+}

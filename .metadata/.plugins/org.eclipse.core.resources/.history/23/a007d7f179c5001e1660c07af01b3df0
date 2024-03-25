@@ -1,0 +1,5 @@
+package com.springBatch.repository;
+
+public interface SpringBatchRepo {
+
+}

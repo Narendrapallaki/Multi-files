@@ -1,0 +1,68 @@
+<!-- <!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Form</title>
+    <style>
+        .error { color: red; }
+        .invalid { border: 1px solid red; }
+    </style>
+</head>
+<body>
+    <form th:object="${user}" th:action="@{/forTesting}" method="get">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" th:field="*{email}" th:classappend="${#fields.hasErrors('email')} ? 'invalid' : ''" />
+        
+        <span th:if="${errorMessage}" class="error" th:text="${errorMessage}">Invalid email</span>
+        <br>
+        <input type="submit" value="submit">  <input type="reset" value="reset">
+    </form>
+</body>
+</html>
+ -->
+ <!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Form</title>
+    <style>
+        .error { color: red; }
+        .invalid { border: 1px solid black; }
+        
+        .resetClass {
+    display: inline-block;
+	padding: 3px 6px;
+	background-color: #EC1414;
+	color: white;
+	text-decoration: none;
+	border-radius: 2px;
+}
+
+.ressetClass:hover {
+    /* Define styles for when the link is hovered over */
+   background-color: #EC1414;
+}
+    </style>
+</head>
+<body>
+    <form th:object="${user}" th:action="@{/forTesting}" method="get" id="myForm">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" th:field="*{email}" th:classappend="${#fields.hasErrors('email')} ? 'invalid' : ''" />
+        <br>
+        <span th:if="${errorMessage}" class="error" th:text="${errorMessage}">Invalid email</span>
+        <br>
+        <input type="submit" value="submit"> <a th:href="@{/form}" class="resetClass">Reset</a>
+        
+    </form>
+                                            
+    <script>
+        function hideErrorMessage() {
+            var errorMessage = document.querySelector('.error');
+            if (errorMessage) {
+                errorMessage.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
+ 

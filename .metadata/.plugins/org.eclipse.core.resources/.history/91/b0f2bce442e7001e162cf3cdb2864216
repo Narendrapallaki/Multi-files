@@ -1,0 +1,21 @@
+package com.logger;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import lombok.extern.slf4j.Slf4j;
+
+@SpringBootApplication
+@Slf4j
+public class LoggerImpApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(LoggerImpApplication.class, args);
+		
+		
+		log.info("This is logger file");
+		
+	
+	}
+
+}

@@ -1,0 +1,44 @@
+package com.java8Features.lambdaEx;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class Te {
+	
+	
+	public static void main(String[] args) {
+		
+		
+		
+		        String inputString = "banana";
+		        Map<Character, Integer> charCount = new HashMap<>();
+
+		        // Count the frequency of each character
+		        for (char c : inputString.toCharArray()) {
+		            if (charCount.containsKey(c)) {
+		                charCount.put(c, charCount.get(c) + 1);
+		            } else {
+		                charCount.put(c, 1);
+		            }
+		        }
+
+		        // Find duplicates and store them in a map
+		        Map<Character, Integer> duplicates = new HashMap();
+		        for (Map.Entry<Character, Integer> entry : charCount.entrySet()) {
+		            if (entry.getValue() > 1) {
+		                duplicates.put(entry.getKey(), entry.getValue());
+		            }
+		        }
+
+		        // Print duplicates
+		        if (!duplicates.isEmpty()) {
+		            System.out.println("Duplicates found:");
+		            for (Map.Entry<Character, Integer> entry : duplicates.entrySet()) {
+		                System.out.println("'" + entry.getKey() + "' appears " + entry.getValue() + " times.");
+		            }
+		        } else {
+		            System.out.println("No duplicates found in the string.");
+		        }
+	}
+
+}

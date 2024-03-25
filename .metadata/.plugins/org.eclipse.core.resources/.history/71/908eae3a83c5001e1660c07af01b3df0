@@ -1,0 +1,143 @@
+package com.springBatch.Config;
+
+import javax.sql.DataSource;
+
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.Step;
+import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
+import org.springframework.batch.core.job.builder.JobBuilder;
+import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.step.builder.SimpleStepBuilder;
+import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.item.data.RepositoryItemWriter;
+import org.springframework.batch.item.file.FlatFileItemReader;
+import org.springframework.batch.item.file.LineMapper;
+import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
+import org.springframework.batch.item.file.mapping.DefaultLineMapper;
+import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+
+import com.springBatch.entity.Department;
+import com.springBatch.repository.SpringBatchRepo;
+
+@Configuration
+@EnableBatchProcessing
+public class SpringBatchConfig {
+	        
+	       @Autowired
+           private SpringBatchRepo batchRepo;
+	
+     // item reader
+    @Bean
+    public FlatFileItemReader<Department> itemReader() {
+
+        FlatFileItemReader<Department> flatFileItemReader = new FlatFileItemReader<>();
+        flatFileItemReader.setResource(new FileSystemResource("src/main/resources/users.csv"));
+        flatFileItemReader.setName("CSV-Reader");
+        flatFileItemReader.setLinesToSkip(1);
+        flatFileItemReader.setLineMapper(lineMapper());
+        return flatFileItemReader;
+    }
+
+    @Bean
+    public LineMapper<Department> lineMapper() {
+
+        DefaultLineMapper<Department> defaultLineMapper = new DefaultLineMapper<>();
+        DelimitedLineTokenizer lineTokenizer = new DelimitedLineTokenizer();
+
+        lineTokenizer.setDelimiter(",");
+        lineTokenizer.setStrict(false);
+        lineTokenizer.setNames("id", "name", "dept", "salary");
+
+        BeanWrapperFieldSetMapper<Department> fieldSetMapper = new BeanWrapperFieldSetMapper<>();
+        fieldSetMapper.setTargetType(Department.class);
+
+        defaultLineMapper.setLineTokenizer(lineTokenizer);
+        defaultLineMapper.setFieldSetMapper(fieldSetMapper);
+
+        return defaultLineMapper;
+    }
+
+    
+    // item processor
+    @Bean
+    public CompleteProcessor completeProcessor()
+    {
+    	return new CompleteProcessor();
+    }
+    // item writer
+    
+    public RepositoryItemWriter<Department>itemWriter()
+    {
+    	
+    	RepositoryItemWriter<Department>writer=new RepositoryItemWriter<>();
+    	
+    	writer.setRepository(batchRepo);
+    	writer.setMethodName("save");
+		return writer;
+    	
+    }
+    
+    
+    
+	@Bean
+	public DataSource dataSource() {
+		DriverManagerDataSource dataSource = new DriverManagerDataSource();
+		dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
+		dataSource.setUrl("jdbc:mysql://localhost:3306/nari"); // Replace with your MySQL database URL
+		dataSource.setUsername("system");
+		dataSource.setPassword("root");
+		return dataSource;
+	}
+
+	@Bean
+	public DataSourceTransactionManager transactionManager(DataSource dataSource) {
+		return new DataSourceTransactionManager(dataSource);
+	}
+    
+	// step 
+    public Step steps(JobRepository jobRepository,DataSourceTransactionManager transactionManager)
+    {
+    	return new StepBuilder("jobstep", jobRepository)
+    			.<Department,Department>chunk(10, transactionManager)
+    			.writer(itemWriter())
+    			.processor(completeProcessor())
+    			.reader(itemReader())
+    			.build();
+    }
+    
+    //job 
+    
+    @Bean
+	Job jobBean(JobRepository jobRepository, JobComplitionNotificationImpl listener, Step steps) {
+		return new JobBuilder("job", jobRepository)
+				.listener(listener)
+				.start(steps)
+				.build();
+	}
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+}

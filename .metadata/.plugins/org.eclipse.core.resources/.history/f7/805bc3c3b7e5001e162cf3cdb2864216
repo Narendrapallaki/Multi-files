@@ -1,0 +1,27 @@
+package com.java8Features.streams;
+
+public class Movie implements Comparable<Movie> {
+
+	public String name;
+	public double rating;
+	public int year;
+
+	@Override
+	public int compareTo(Movie o) {
+		// TODO Auto-generated method stub
+		return Integer.compare(this.year, o.year);
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public double getRating() {
+		return rating;
+	}
+
+	public int getYear() {
+		return year;
+	}
+
+}

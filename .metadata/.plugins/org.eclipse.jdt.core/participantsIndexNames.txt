@@ -1,0 +1,3 @@
+INDEX VERSION 1.134
+C:\Users\Sreenivas Bandaru\Documents\workspace-spring-tool-suite-4-4.21.0.RELEASE\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\248029972.index
+\ImageStore\src\main\java

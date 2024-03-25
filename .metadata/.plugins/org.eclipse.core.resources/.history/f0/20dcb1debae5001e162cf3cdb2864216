@@ -1,0 +1,7 @@
+package com.java8Features.streams;
+
+import java.util.Comparator;
+
+public class UserComparator implements Comparator<UserComparator> {
+
+}

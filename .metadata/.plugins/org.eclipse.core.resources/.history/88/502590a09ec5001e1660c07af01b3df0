@@ -1,0 +1,18 @@
+package com.springBatch.Config;
+
+import org.springframework.batch.item.ItemProcessor;
+
+import com.springBatch.entity.Department;
+
+public class CompleteProcessor implements ItemProcessor<Department, Department>{
+
+	@Override
+	public Department process(Department item) throws Exception {
+		// TODO Auto-generated method stub
+		String string = item.toString();
+		String name = item.getName();
+		System.out.println("Item processor :"+name+string);
+		return null;
+	}
+
+}

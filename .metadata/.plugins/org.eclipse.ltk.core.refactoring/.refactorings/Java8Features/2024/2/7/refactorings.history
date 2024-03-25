@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename type &apos;com.java8Features.lambdaEx.book&apos; to &apos;nook&apos;&#x0D;&#x0A;- Original project: &apos;Java8Features&apos;&#x0D;&#x0A;- Original element: &apos;com.java8Features.lambdaEx.book&apos;&#x0D;&#x0A;- Renamed element: &apos;com.java8Features.lambdaEx.nook&apos;&#x0D;&#x0A;- Update references to refactored element&#x0D;&#x0A;- Update textual occurrences in comments and strings" description="Rename type &apos;book&apos;" flags="589830" id="org.eclipse.jdt.ui.rename.type" input="/src&lt;com.java8Features.lambdaEx{LambdaEx.java[book" matchStrategy="1" name="nook" qualified="false" references="true" similarDeclarations="false" stamp="1707799552406" textual="false" version="1.0"/>
+</session>
